@@ -1,0 +1,2599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4a2544">
+
+<title>African Flower Progress Tracker</title>
+
+<style>
+:root {
+  --purple:#4a2544;
+  --rust:#b14930;
+  --cream:#f7efe0;
+  --sage:#6f8069;
+  --brass:#c99d48;
+  --ink:#221f21;
+  --card:#ffffff;
+  --muted:#6b6268;
+  --line:#cfc1b8;
+  --danger:#8c2f2f;
+  --shadow:0 3px 12px rgba(34,31,33,.1);
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.app {
+  width:min(1050px,100%);
+  margin:auto;
+  padding:14px;
+}
+
+.hidden {
+  display:none !important;
+}
+
+.topbar,
+.row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.topbar {
+  justify-content:space-between;
+}
+
+.grow {
+  flex:1;
+}
+
+h1,
+h2,
+h3 {
+  margin:.25rem 0;
+}
+
+.subtle,
+.help {
+  color:var(--muted);
+  font-size:.88rem;
+}
+
+.card {
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:15px;
+  margin:12px 0;
+  box-shadow:var(--shadow);
+}
+
+button,
+input,
+select {
+  font:inherit;
+}
+
+button {
+  border:0;
+  border-radius:10px;
+  padding:11px 14px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.primary {
+  background:var(--purple);
+  color:#ffffff;
+}
+
+.secondary {
+  background:#e8ddd6;
+  color:var(--ink);
+}
+
+.danger {
+  background:var(--danger);
+  color:#ffffff;
+}
+
+.smallButton {
+  padding:8px 10px;
+}
+
+.grid {
+  display:grid;
+  gap:10px;
+}
+
+.two {
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+
+.field label {
+  display:block;
+  font-size:.8rem;
+  font-weight:900;
+  margin-bottom:4px;
+}
+
+.field input,
+.field select,
+.tableInput {
+  width:100%;
+  padding:10px;
+  border:1px solid #9f9298;
+  border-radius:9px;
+  background:#ffffff;
+  color:#221f21;
+}
+
+.bar {
+  height:18px;
+  border:2px solid var(--ink);
+  background:#e8ddd6;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.fill {
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--sage),var(--brass));
+}
+
+.projectCard {
+  cursor:pointer;
+}
+
+.projectCard:focus {
+  outline:3px solid var(--brass);
+}
+
+.badge {
+  display:inline-block;
+  border-radius:999px;
+  padding:4px 9px;
+  background:#e8ddd6;
+  font-weight:800;
+  font-size:.78rem;
+}
+
+.setupRow {
+  display:grid;
+  grid-template-columns:1.3fr .65fr .65fr 46px;
+  gap:7px;
+  align-items:end;
+  margin:8px 0;
+}
+
+.roundRow {
+  display:grid;
+  grid-template-columns:1fr 1fr .65fr .65fr 54px 46px;
+  gap:7px;
+  align-items:end;
+  margin:8px 0;
+}
+
+.colorInput {
+  height:42px;
+  padding:2px !important;
+}
+
+.trackerGroup {
+  border-left:9px solid var(--group-color,#777777);
+}
+
+.counter {
+  display:grid;
+  grid-template-columns:52px 1fr 52px;
+  gap:8px;
+  align-items:center;
+  margin-top:9px;
+}
+
+.counter button {
+  font-size:1.5rem;
+  padding:7px;
+}
+
+.counterText {
+  text-align:center;
+  font-weight:900;
+}
+
+.squares {
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin:10px 0;
+}
+
+.square {
+  width:22px;
+  height:22px;
+  border:2px solid #000000;
+  background:#ffffff;
+  border-radius:2px;
+}
+
+.square.done {
+  background:var(--group-color,#777777);
+}
+
+.empty {
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+}
+
+.notice {
+  border-left:6px solid var(--brass);
+  padding-left:10px;
+}
+
+.tabs {
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding-bottom:3px;
+}
+
+.tab {
+  white-space:nowrap;
+}
+
+.tab.active {
+  background:var(--purple);
+  color:#ffffff;
+}
+
+@media(max-width:650px) {
+  .app {
+    padding:10px;
+  }
+
+  .setupRow {
+    grid-template-columns:1fr .55fr;
+  }
+
+  .roundRow {
+    grid-template-columns:1fr 1fr;
+  }
+
+  .setupRow button,
+  .roundRow button {
+    width:100%;
+  }
+
+  .mobileFull {
+    grid-column:1 / -1;
+  }
+
+  .topbar > button {
+    flex:1;
+  }
+
+  .square {
+    width:20px;
+    height:20px;
+  }
+}
+
+@media(prefers-color-scheme:dark) {
+  :root {
+    --cream:#181417;
+    --ink:#f7efe0;
+    --card:#282126;
+    --muted:#c8bdc2;
+    --line:#51434a;
+    --shadow:none;
+  }
+
+  .secondary,
+  .badge {
+    background:#4b4046;
+    color:#ffffff;
+  }
+
+  .field input,
+  .field select,
+  .tableInput {
+    background:#171317;
+    color:#ffffff;
+    border-color:#71636a;
+  }
+
+  .bar {
+    background:#171317;
+    border-color:#f7efe0;
+  }
+
+  .square {
+    border-color:#000000;
+    background:#ffffff;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+<section id="homeView">
+
+  <div class="topbar">
+
+    <div>
+      <h1>African Flower Tracker</h1>
+      <div class="subtle">
+        Saved projects and stitch-weighted progress
+      </div>
+    </div>
+
+    <button id="newProjectBtn" class="primary">
+      + New Project
+    </button>
+
+  </div>
+
+  <div class="card grid two">
+
+    <div class="field">
+      <label for="statusFilter">Status</label>
+
+      <select id="statusFilter">
+        <option>All</option>
+        <option>Active</option>
+        <option>Pending</option>
+        <option>Finished</option>
+        <option>Archived</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="projectSearch">Search</label>
+
+      <input
+        id="projectSearch"
+        placeholder="Project name"
+      >
+    </div>
+
+  </div>
+
+  <div id="projectList"></div>
+
+</section>
+
+
+<section id="projectView" class="hidden">
+
+  <div class="topbar">
+
+    <button id="backBtn" class="secondary">
+      ← Projects
+    </button>
+
+    <div class="row">
+
+      <button id="duplicateBtn" class="secondary">
+        Duplicate
+      </button>
+
+      <button id="deleteBtn" class="danger">
+        Delete
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="grid two">
+
+      <div class="field">
+
+        <label for="projectName">
+          Project name
+        </label>
+
+        <input id="projectName">
+
+      </div>
+
+      <div class="field">
+
+        <label for="projectStatus">
+          Status
+        </label>
+
+        <select id="projectStatus">
+          <option>Active</option>
+          <option>Pending</option>
+          <option>Finished</option>
+          <option>Archived</option>
+        </select>
+
+      </div>
+
+    </div>
+
+    <div
+      style="margin-top:14px"
+      class="bar"
+    >
+      <div
+        id="overallFill"
+        class="fill"
+      ></div>
+    </div>
+
+    <div
+      class="row"
+      style="margin-top:7px"
+    >
+
+      <strong id="overallPercent">
+        0.0%
+      </strong>
+
+      <span
+        id="overallStitches"
+        class="subtle"
+      ></span>
+
+      <span class="grow"></span>
+
+      <span
+        id="saveState"
+        class="subtle"
+      >
+        Saved
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="tabs">
+
+    <button
+      class="tab active secondary"
+      data-panel="setupPanel"
+    >
+      1. Pattern Setup
+    </button>
+
+    <button
+      class="tab secondary"
+      data-panel="trackerPanel"
+    >
+      2. Track Progress
+    </button>
+
+  </div>
+
+
+  <section id="setupPanel">
+
+    <div class="card">
+
+      <h2>Motif sizes and quantities</h2>
+
+      <p class="help">
+        Add every motif size or modified shape required.
+        Set its number of sides and the exact quantity needed.
+        A quantity of 0 will keep that motif out of the working tracker.
+      </p>
+
+      <button
+        id="addMotifBtn"
+        class="secondary"
+      >
+        + Add Motif Size
+      </button>
+
+      <div id="motifSetup"></div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Rows and colour sections</h2>
+
+      <p class="help">
+        Enter either a fixed stitch count or stitches per side for
+        each completed row. Rows with the exact same colour-section
+        name are completed together with one + tap.
+      </p>
+
+      <button
+        id="addRoundBtn"
+        class="secondary"
+      >
+        + Add Row
+      </button>
+
+      <div id="roundSetup"></div>
+
+    </div>
+
+  </section>
+
+
+  <section
+    id="trackerPanel"
+    class="hidden"
+  >
+
+    <div class="card notice">
+
+      <strong>
+        One tap completes one motif in that colour section.
+      </strong>
+
+      <div class="help">
+        The percentage is calculated from completed stitches.
+        A larger outer row contributes more progress than a
+        smaller centre row.
+      </div>
+
+    </div>
+
+    <div id="tracker"></div>
+
+  </section>
+
+</section>
+
+</main>
+
+
+<script>
+(() => {
+
+"use strict";
+
+const STORAGE_KEY = "africanFlowerTrackerV1";
+
+const $ = selector =>
+  document.querySelector(selector);
+
+let store = loadStore();
+
+let currentId = null;
+
+
+/* ===========================
+   IDENTIFIERS
+=========================== */
+
+function uid() {
+
+  return (
+    Date.now().toString(36) +
+    Math.random().toString(36).slice(2,8)
+  );
+
+}
+
+
+/* ===========================
+   LOCAL SAVING
+=========================== */
+
+function loadStore() {
+
+  try {
+
+    const data = JSON.parse(
+      localStorage.getItem(STORAGE_KEY)
+    );
+
+    if (
+      data &&
+      Array.isArray(data.projects)
+    ) {
+
+      return data;
+
+    }
+
+    return {
+      projects:[]
+    };
+
+  } catch (error) {
+
+    return {
+      projects:[]
+    };
+
+  }
+
+}
+
+
+function saveStore() {
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(store)
+  );
+
+  const saveState =
+    $("#saveState");
+
+  if (saveState) {
+
+    saveState.textContent =
+      "Saved " +
+      new Date().toLocaleTimeString(
+        [],
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      );
+
+  }
+
+}
+
+
+/* ===========================
+   SAFE DISPLAY TEXT
+=========================== */
+
+function escapeHTML(value) {
+
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      character => ({
+        "&":"&",
+        "<":"<",
+        ">":">",
+        '"':""",
+        "'":"'"
+      }[character])
+    );
+
+}
+
+
+/* ===========================
+   CURRENT PROJECT
+=========================== */
+
+function currentProject() {
+
+  return store.projects.find(
+    project =>
+      project.id === currentId
+  );
+
+}
+
+
+/* ===========================
+   NEW PROJECT TEMPLATE
+=========================== */
+
+function buildNewProject() {
+
+  const projectNumber =
+    store.projects.length + 1;
+
+  return {
+
+    id:uid(),
+
+    name:
+      "Untitled African Flower Project " +
+      projectNumber,
+
+    status:"Active",
+
+    created:Date.now(),
+
+    motifs:[
+
+      {
+        id:uid(),
+        name:"Pentagon",
+        sides:5,
+        quantity:0
+      },
+
+      {
+        id:uid(),
+        name:"Hexagon",
+        sides:6,
+        quantity:0
+      },
+
+      {
+        id:uid(),
+        name:"Heptagon",
+        sides:7,
+        quantity:0
+      },
+
+      {
+        id:uid(),
+        name:"Octagon",
+        sides:8,
+        quantity:0
+      },
+
+      {
+        id:uid(),
+        name:"Modified Pentagon",
+        sides:5,
+        quantity:0
+      },
+
+      {
+        id:uid(),
+        name:"Modified Octagon",
+        sides:8,
+        quantity:0
+      }
+
+    ],
+
+    rounds:[
+
+      {
+        id:uid(),
+        name:"Row 1",
+        section:"Centre",
+        color:"#b99ad9",
+        baseStitches:12,
+        perSide:0
+      },
+
+      {
+        id:uid(),
+        name:"Row 2",
+        section:"Petals",
+        color:"#4f8f83",
+        baseStitches:0,
+        perSide:7
+      },
+
+      {
+        id:uid(),
+        name:"Row 3",
+        section:"Petals",
+        color:"#4f8f83",
+        baseStitches:0,
+        perSide:9
+      },
+
+      {
+        id:uid(),
+        name:"Row 4",
+        section:"Border",
+        color:"#222222",
+        baseStitches:0,
+        perSide:11
+      },
+
+      {
+        id:uid(),
+        name:"Row 5",
+        section:"Border",
+        color:"#222222",
+        baseStitches:0,
+        perSide:13
+      }
+
+    ],
+
+    progress:{}
+
+  };
+
+}
+
+
+/* ===========================
+   STITCH CALCULATION
+=========================== */
+
+function calculateRowStitches(
+  motif,
+  round
+) {
+
+  const fixedStitches =
+    Number(round.baseStitches) || 0;
+
+  const stitchesPerSide =
+    Number(round.perSide) || 0;
+
+  const numberOfSides =
+    Number(motif.sides) || 0;
+
+  return Math.max(
+    0,
+    Math.round(
+      fixedStitches +
+      (
+        stitchesPerSide *
+        numberOfSides
+      )
+    )
+  );
+
+}
+
+
+/* ===========================
+   COLOUR SECTIONS
+=========================== */
+
+function getSections(project) {
+
+  const sectionMap = {};
+
+  project.rounds.forEach(round => {
+
+    const sectionName =
+      (
+        round.section ||
+        round.name ||
+        "Unlabelled"
+      ).trim();
+
+    if (!sectionMap[sectionName]) {
+
+      sectionMap[sectionName] = {
+
+        name:sectionName,
+
+        color:
+          round.color ||
+          "#777777",
+
+        rounds:[]
+
+      };
+
+    }
+
+    sectionMap[sectionName]
+      .rounds
+      .push(round);
+
+  });
+
+  return Object.values(
+    sectionMap
+  );
+
+}
+
+
+/* ===========================
+   PROGRESS IDENTIFIER
+=========================== */
+
+function progressKey(
+  motif,
+  section
+) {
+
+  return (
+    motif.id +
+    "::" +
+    section.name
+  );
+
+}
+
+
+/* ===========================
+   STITCH-WEIGHTED TOTALS
+=========================== */
+
+function calculateTotals(project) {
+
+  let totalStitches = 0;
+
+  let completedStitches = 0;
+
+  const activeMotifs =
+    project.motifs.filter(
+      motif =>
+        (Number(motif.quantity) || 0) > 0
+    );
+
+
+  activeMotifs.forEach(motif => {
+
+    project.rounds.forEach(round => {
+
+      totalStitches +=
+
+        motif.quantity *
+
+        calculateRowStitches(
+          motif,
+          round
+        );
+
+    });
+
+  });
+
+
+  const sectionList =
+    getSections(project);
+
+
+  activeMotifs.forEach(motif => {
+
+    sectionList.forEach(section => {
+
+      const key =
+        progressKey(
+          motif,
+          section
+        );
+
+      const completedMotifs =
+        Math.min(
+          motif.quantity,
+          Number(
+            project.progress[key]
+          ) || 0
+        );
+
+      const stitchesPerMotif =
+
+        section.rounds.reduce(
+          (total,round) => {
+
+            return (
+              total +
+              calculateRowStitches(
+                motif,
+                round
+              )
+            );
+
+          },
+          0
+        );
+
+      completedStitches +=
+
+        completedMotifs *
+        stitchesPerMotif;
+
+    });
+
+  });
+
+
+  const percent =
+
+    totalStitches
+
+      ? (
+          completedStitches /
+          totalStitches
+        ) * 100
+
+      : 0;
+
+
+  return {
+
+    total:totalStitches,
+
+    completed:
+      completedStitches,
+
+    percent:percent
+
+  };
+
+}
+
+
+/* ===========================
+   HOME SCREEN
+=========================== */
+
+function renderHome() {
+
+  const filter =
+    $("#statusFilter").value;
+
+  const search =
+    $("#projectSearch")
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const projects =
+    store.projects.filter(
+      project => {
+
+        const matchesStatus =
+
+          filter === "All" ||
+
+          project.status ===
+            filter;
+
+
+        const matchesSearch =
+
+          project.name
+            .toLowerCase()
+            .includes(search);
+
+
+        return (
+          matchesStatus &&
+          matchesSearch
+        );
+
+      }
+    );
+
+
+  if (!projects.length) {
+
+    $("#projectList").innerHTML =
+
+      `<div class="card empty">
+        No saved projects in this view.
+      </div>`;
+
+    return;
+
+  }
+
+
+  $("#projectList").innerHTML =
+
+    projects.map(project => {
+
+      const totals =
+        calculateTotals(project);
+
+      const totalMotifs =
+
+        project.motifs.reduce(
+          (total,motif) => {
+
+            return (
+              total +
+              (
+                Number(
+                  motif.quantity
+                ) || 0
+              )
+            );
+
+          },
+          0
+        );
+
+
+      return `
+
+      <article
+        class="card projectCard"
+        tabindex="0"
+        data-open="${project.id}"
+      >
+
+        <div class="row">
+
+          <h3>
+            ${escapeHTML(
+              project.name
+            )}
+          </h3>
+
+          <span class="grow"></span>
+
+          <span class="badge">
+            ${escapeHTML(
+              project.status
+            )}
+          </span>
+
+        </div>
+
+
+        <div class="bar">
+
+          <div
+            class="fill"
+            style="width:${
+              Math.min(
+                100,
+                totals.percent
+              )
+            }%"
+          ></div>
+
+        </div>
+
+
+        <div
+          class="subtle"
+          style="margin-top:6px"
+        >
+
+          ${totals.percent.toFixed(1)}%
+
+          ·
+
+          ${totals.completed.toLocaleString()}
+
+          of
+
+          ${totals.total.toLocaleString()}
+
+          stitches
+
+          ·
+
+          ${totalMotifs}
+
+          motifs
+
+        </div>
+
+      </article>
+
+      `;
+
+    }).join("");
+
+
+  document
+    .querySelectorAll(
+      "[data-open]"
+    )
+    .forEach(element => {
+
+      element.onclick = () => {
+
+        openProject(
+          element.dataset.open
+        );
+
+      };
+
+
+      element.onkeydown = event => {
+
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          openProject(
+            element.dataset.open
+          );
+
+        }
+
+      };
+
+    });
+
+}
+
+
+/* ===========================
+   CREATE PROJECT
+=========================== */
+
+function createProject() {
+
+  const project =
+    buildNewProject();
+
+  store.projects.unshift(
+    project
+  );
+
+  saveStore();
+
+  openProject(
+    project.id
+  );
+
+}
+
+
+/* ===========================
+   OPEN PROJECT
+=========================== */
+
+function openProject(projectId) {
+
+  currentId =
+    projectId;
+
+  const project =
+    currentProject();
+
+  if (!project) {
+    return;
+  }
+
+
+  $("#homeView")
+    .classList
+    .add("hidden");
+
+  $("#projectView")
+    .classList
+    .remove("hidden");
+
+
+  $("#projectName").value =
+    project.name;
+
+  $("#projectStatus").value =
+    project.status;
+
+
+  showPanel(
+    "setupPanel"
+  );
+
+  renderProject();
+
+}
+
+
+/* ===========================
+   RENDER PROJECT
+=========================== */
+
+function renderProject() {
+
+  renderMotifSetup();
+
+  renderRoundSetup();
+
+  renderTracker();
+
+  renderOverallProgress();
+
+  saveStore();
+
+}
+
+
+/* ===========================
+   OVERALL PROGRESS
+=========================== */
+
+function renderOverallProgress() {
+
+  const project =
+    currentProject();
+
+  const totals =
+    calculateTotals(project);
+
+
+  $("#overallFill").style.width =
+
+    Math.min(
+      100,
+      totals.percent
+    ) + "%";
+
+
+  $("#overallPercent").textContent =
+
+    totals.percent.toFixed(1) +
+    "%";
+
+
+  $("#overallStitches").textContent =
+
+    totals.completed.toLocaleString()
+
+    + " / " +
+
+    totals.total.toLocaleString()
+
+    + " stitches";
+
+
+  if (
+    totals.total > 0 &&
+    totals.percent >= 100 &&
+    project.status === "Active"
+  ) {
+
+    project.status =
+      "Finished";
+
+    $("#projectStatus").value =
+      "Finished";
+
+    saveStore();
+
+  }
+
+}
+
+
+/* ===========================
+   MOTIF SETUP
+=========================== */
+
+function renderMotifSetup() {
+
+  const project =
+    currentProject();
+
+
+  $("#motifSetup").innerHTML =
+
+    project.motifs
+      .map(motif => {
+
+        return `
+
+        <div class="setupRow">
+
+          <div class="field">
+
+            <label>
+              Motif size / shape
+            </label>
+
+            <input
+              class="tableInput"
+              data-motif-name="${motif.id}"
+              value="${escapeHTML(
+                motif.name
+              )}"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Sides
+            </label>
+
+            <input
+              class="tableInput"
+              type="number"
+              min="1"
+              data-motif-sides="${motif.id}"
+              value="${motif.sides}"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Quantity
+            </label>
+
+            <input
+              class="tableInput"
+              type="number"
+              min="0"
+              data-motif-quantity="${motif.id}"
+              value="${motif.quantity}"
+            >
+
+          </div>
+
+
+          <button
+            class="danger smallButton"
+            aria-label="Delete motif"
+            data-delete-motif="${motif.id}"
+          >
+            ×
+          </button>
+
+        </div>
+
+        `;
+
+      })
+      .join("");
+
+
+  bindMotifInputs();
+
+}
+
+
+/* ===========================
+   MOTIF INPUT EVENTS
+=========================== */
+
+function bindMotifInputs() {
+
+  document
+    .querySelectorAll(
+      "[data-motif-name]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const motif =
+          currentProject()
+            .motifs
+            .find(
+              item =>
+                item.id ===
+                input.dataset.motifName
+            );
+
+        motif.name =
+
+          input.value.trim() ||
+
+          "Custom Motif";
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-motif-sides]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const motif =
+          currentProject()
+            .motifs
+            .find(
+              item =>
+                item.id ===
+                input.dataset.motifSides
+            );
+
+        motif.sides =
+
+          Math.max(
+            1,
+            parseInt(
+              input.value,
+              10
+            ) || 1
+          );
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-motif-quantity]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const motif =
+          currentProject()
+            .motifs
+            .find(
+              item =>
+                item.id ===
+                input.dataset.motifQuantity
+            );
+
+        motif.quantity =
+
+          Math.max(
+            0,
+            parseInt(
+              input.value,
+              10
+            ) || 0
+          );
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-delete-motif]"
+    )
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        const project =
+          currentProject();
+
+
+        if (
+          project.motifs.length === 1
+        ) {
+
+          alert(
+            "Keep at least one motif size."
+          );
+
+          return;
+
+        }
+
+
+        project.motifs =
+
+          project.motifs.filter(
+            motif =>
+              motif.id !==
+              button.dataset.deleteMotif
+          );
+
+        renderProject();
+
+      };
+
+    });
+
+}
+
+
+/* ===========================
+   ROW SETUP
+=========================== */
+
+function renderRoundSetup() {
+
+  const project =
+    currentProject();
+
+
+  $("#roundSetup").innerHTML =
+
+    project.rounds
+      .map(round => {
+
+        return `
+
+        <div class="roundRow">
+
+          <div class="field">
+
+            <label>
+              Row name
+            </label>
+
+            <input
+              class="tableInput"
+              data-round-name="${round.id}"
+              value="${escapeHTML(
+                round.name
+              )}"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Colour section
+            </label>
+
+            <input
+              class="tableInput"
+              data-round-section="${round.id}"
+              value="${escapeHTML(
+                round.section
+              )}"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Fixed stitches
+            </label>
+
+            <input
+              class="tableInput"
+              type="number"
+              min="0"
+              data-round-base="${round.id}"
+              value="${round.baseStitches}"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Per side
+            </label>
+
+            <input
+              class="tableInput"
+              type="number"
+              min="0"
+              data-round-side="${round.id}"
+              value="${round.perSide}"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Colour
+            </label>
+
+            <input
+              class="tableInput colorInput"
+              type="color"
+              data-round-color="${round.id}"
+              value="${round.color}"
+            >
+
+          </div>
+
+
+          <button
+            class="danger smallButton mobileFull"
+            aria-label="Delete row"
+            data-delete-round="${round.id}"
+          >
+            ×
+          </button>
+
+        </div>
+
+        `;
+
+      })
+      .join("");
+
+
+  bindRoundInputs();
+
+}
+
+
+/* ===========================
+   ROW INPUT EVENTS
+=========================== */
+
+function bindRoundInputs() {
+
+  document
+    .querySelectorAll(
+      "[data-round-name]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const round =
+          currentProject()
+            .rounds
+            .find(
+              item =>
+                item.id ===
+                input.dataset.roundName
+            );
+
+        round.name =
+
+          input.value.trim() ||
+
+          "Row";
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-round-section]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const round =
+          currentProject()
+            .rounds
+            .find(
+              item =>
+                item.id ===
+                input.dataset.roundSection
+            );
+
+        round.section =
+
+          input.value.trim() ||
+
+          round.name;
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-round-base]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const round =
+          currentProject()
+            .rounds
+            .find(
+              item =>
+                item.id ===
+                input.dataset.roundBase
+            );
+
+        round.baseStitches =
+
+          Math.max(
+            0,
+            Number(
+              input.value
+            ) || 0
+          );
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-round-side]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const round =
+          currentProject()
+            .rounds
+            .find(
+              item =>
+                item.id ===
+                input.dataset.roundSide
+            );
+
+        round.perSide =
+
+          Math.max(
+            0,
+            Number(
+              input.value
+            ) || 0
+          );
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-round-color]"
+    )
+    .forEach(input => {
+
+      input.onchange = () => {
+
+        const round =
+          currentProject()
+            .rounds
+            .find(
+              item =>
+                item.id ===
+                input.dataset.roundColor
+            );
+
+        round.color =
+          input.value;
+
+        renderProject();
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-delete-round]"
+    )
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        const project =
+          currentProject();
+
+
+        if (
+          project.rounds.length === 1
+        ) {
+
+          alert(
+            "Keep at least one row."
+          );
+
+          return;
+
+        }
+
+
+        project.rounds =
+
+          project.rounds.filter(
+            round =>
+              round.id !==
+              button.dataset.deleteRound
+          );
+
+        renderProject();
+
+      };
+
+    });
+
+}
+
+
+/* ===========================
+   PRODUCTION TRACKER
+=========================== */
+
+function renderTracker() {
+
+  const project =
+    currentProject();
+
+  const activeMotifs =
+
+    project.motifs.filter(
+      motif =>
+        (
+          Number(
+            motif.quantity
+          ) || 0
+        ) > 0
+    );
+
+  const sectionList =
+    getSections(project);
+
+
+  if (!activeMotifs.length) {
+
+    $("#tracker").innerHTML =
+
+      `<div class="card empty">
+        Set a quantity above 0 for at least one motif size.
+      </div>`;
+
+    return;
+
+  }
+
+
+  $("#tracker").innerHTML =
+
+    activeMotifs
+      .map(motif => {
+
+        return `
+
+        <div class="card">
+
+          <div class="row">
+
+            <h2>
+              ${escapeHTML(
+                motif.name
+              )}
+            </h2>
+
+            <span class="grow"></span>
+
+            <span class="badge">
+              ${motif.quantity} required
+            </span>
+
+          </div>
+
+
+          ${sectionList.map(section => {
+
+            const key =
+              progressKey(
+                motif,
+                section
+              );
+
+
+            const completed =
+
+              Math.min(
+                motif.quantity,
+                Number(
+                  project.progress[key]
+                ) || 0
+              );
+
+
+            const stitchValue =
+
+              section.rounds.reduce(
+                (total,round) => {
+
+                  return (
+                    total +
+                    calculateRowStitches(
+                      motif,
+                      round
+                    )
+                  );
+
+                },
+                0
+              );
+
+
+            const squares =
+
+              Array.from(
+                {
+                  length:
+                    motif.quantity
+                },
+                (_,index) => {
+
+                  const isComplete =
+                    index < completed;
+
+                  return `
+
+                  <span
+                    class="square ${
+                      isComplete
+                        ? "done"
+                        : ""
+                    }"
+                    style="--group-color:${
+                      section.color
+                    }"
+                    title="${
+                      isComplete
+                        ? "Complete"
+                        : "Not complete"
+                    }"
+                  ></span>
+
+                  `;
+
+                }
+              ).join("");
+
+
+            return `
+
+            <div
+              class="card trackerGroup"
+              style="--group-color:${
+                section.color
+              }"
+            >
+
+              <div class="row">
+
+                <div>
+
+                  <h3>
+                    ${escapeHTML(
+                      section.name
+                    )}
+                  </h3>
+
+                  <div class="subtle">
+
+                    ${section.rounds
+                      .map(round =>
+                        escapeHTML(
+                          round.name
+                        )
+                      )
+                      .join(" + ")}
+
+                    ·
+
+                    ${stitchValue.toLocaleString()}
+
+                    stitches per motif
+
+                  </div>
+
+                </div>
+
+                <span class="grow"></span>
+
+                <span class="badge">
+
+                  ${completed}
+
+                  /
+
+                  ${motif.quantity}
+
+                </span>
+
+              </div>
+
+
+              <div
+                class="squares"
+                style="--group-color:${
+                  section.color
+                }"
+              >
+
+                ${squares}
+
+              </div>
+
+
+              <div class="counter">
+
+                <button
+                  class="secondary"
+                  data-minus="${escapeHTML(
+                    key
+                  )}"
+                >
+                  −
+                </button>
+
+
+                <div class="counterText">
+
+                  ${completed}
+
+                  completed
+
+                </div>
+
+
+                <button
+                  class="primary"
+                  data-plus="${escapeHTML(
+                    key
+                  )}"
+                >
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+            `;
+
+          }).join("")}
+
+        </div>
+
+        `;
+
+      })
+      .join("");
+
+
+  document
+    .querySelectorAll(
+      "[data-plus]"
+    )
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        changeProgress(
+          button.dataset.plus,
+          1
+        );
+
+      };
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "[data-minus]"
+    )
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        changeProgress(
+          button.dataset.minus,
+          -1
+        );
+
+      };
+
+    });
+
+}
+
+
+/* ===========================
+   CHANGE PROGRESS
+=========================== */
+
+function changeProgress(
+  key,
+  amount
+) {
+
+  const project =
+    currentProject();
+
+  const motifId =
+    key.split("::")[0];
+
+  const motif =
+    project.motifs.find(
+      item =>
+        item.id === motifId
+    );
+
+  if (!motif) {
+    return;
+  }
+
+
+  const existingCount =
+
+    Number(
+      project.progress[key]
+    ) || 0;
+
+
+  project.progress[key] =
+
+    Math.max(
+      0,
+      Math.min(
+        motif.quantity,
+        existingCount + amount
+      )
+    );
+
+
+  renderTracker();
+
+  renderOverallProgress();
+
+  saveStore();
+
+}
+
+
+/* ===========================
+   TAB DISPLAY
+=========================== */
+
+function showPanel(panelId) {
+
+  document
+    .querySelectorAll(
+      "[data-panel]"
+    )
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.panel ===
+          panelId
+      );
+
+    });
+
+
+  $("#setupPanel")
+    .classList
+    .toggle(
+      "hidden",
+      panelId !== "setupPanel"
+    );
+
+
+  $("#trackerPanel")
+    .classList
+    .toggle(
+      "hidden",
+      panelId !== "trackerPanel"
+    );
+
+
+  if (
+    panelId ===
+    "trackerPanel"
+  ) {
+
+    renderTracker();
+
+  }
+
+}
+
+
+/* ===========================
+   MAIN CONTROLS
+=========================== */
+
+$("#newProjectBtn").onclick =
+  createProject;
+
+
+$("#backBtn").onclick = () => {
+
+  saveStore();
+
+  currentId = null;
+
+  $("#projectView")
+    .classList
+    .add("hidden");
+
+  $("#homeView")
+    .classList
+    .remove("hidden");
+
+  renderHome();
+
+};
+
+
+$("#statusFilter").onchange =
+  renderHome;
+
+
+$("#projectSearch").oninput =
+  renderHome;
+
+
+/* ===========================
+   PROJECT NAME
+=========================== */
+
+$("#projectName").oninput =
+  event => {
+
+    const project =
+      currentProject();
+
+    if (!project) {
+      return;
+    }
+
+    project.name =
+
+      event.target.value
+        .trimStart() ||
+
+      "Untitled African Flower Project";
+
+    saveStore();
+
+  };
+
+
+/* ===========================
+   PROJECT STATUS
+=========================== */
+
+$("#projectStatus").onchange =
+  event => {
+
+    const project =
+      currentProject();
+
+    if (!project) {
+      return;
+    }
+
+    project.status =
+      event.target.value;
+
+    saveStore();
+
+  };
+
+
+/* ===========================
+   ADD MOTIF
+=========================== */
+
+$("#addMotifBtn").onclick =
+  () => {
+
+    currentProject()
+      .motifs
+      .push({
+
+        id:uid(),
+
+        name:"Custom Motif",
+
+        sides:6,
+
+        quantity:0
+
+      });
+
+    renderProject();
+
+  };
+
+
+/* ===========================
+   ADD ROW
+=========================== */
+
+$("#addRoundBtn").onclick =
+  () => {
+
+    currentProject()
+      .rounds
+      .push({
+
+        id:uid(),
+
+        name:"New Row",
+
+        section:"New Colour",
+
+        color:"#777777",
+
+        baseStitches:0,
+
+        perSide:1
+
+      });
+
+    renderProject();
+
+  };
+
+
+/* ===========================
+   DELETE PROJECT
+=========================== */
+
+$("#deleteBtn").onclick =
+  () => {
+
+    const project =
+      currentProject();
+
+    if (!project) {
+      return;
+    }
+
+    const confirmed =
+      confirm(
+        `Delete "${project.name}" permanently?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    store.projects =
+
+      store.projects.filter(
+        item =>
+          item.id !==
+          project.id
+      );
+
+
+    saveStore();
+
+    $("#backBtn").click();
+
+  };
+
+
+/* ===========================
+   DUPLICATE PROJECT
+=========================== */
+
+$("#duplicateBtn").onclick =
+  () => {
+
+    const original =
+      currentProject();
+
+    if (!original) {
+      return;
+    }
+
+
+    const copy =
+      JSON.parse(
+        JSON.stringify(
+          original
+        )
+      );
+
+
+    copy.id =
+      uid();
+
+    copy.name =
+      original.name +
+      " Copy";
+
+    copy.created =
+      Date.now();
+
+    copy.progress = {};
+
+
+    copy.motifs.forEach(
+      motif => {
+
+        motif.id =
+          uid();
+
+      }
+    );
+
+
+    copy.rounds.forEach(
+      round => {
+
+        round.id =
+          uid();
+
+      }
+    );
+
+
+    store.projects.unshift(
+      copy
+    );
+
+    saveStore();
+
+    openProject(
+      copy.id
+    );
+
+  };
+
+
+/* ===========================
+   TAB BUTTONS
+=========================== */
+
+document
+  .querySelectorAll(
+    "[data-panel]"
+  )
+  .forEach(button => {
+
+    button.onclick = () => {
+
+      showPanel(
+        button.dataset.panel
+      );
+
+    };
+
+  });
+
+
+/* ===========================
+   SAVE BEFORE CLOSING
+=========================== */
+
+window.addEventListener(
+  "beforeunload",
+  saveStore
+);
+
+
+/* ===========================
+   START APP
+=========================== */
+
+renderHome();
+
+})();
+</script>
+
+</body>
+</html>
